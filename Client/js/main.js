@@ -1,20 +1,33 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    var currentPlayer = {'squareState': 1, 'name': "X" }, board, player = {'squareState': 1, 'name': "X"};
-    var playing = 0;
-    var url = 'http://localhost:8080';
+    var currentPlayer = {'squareState': 1, 'name': "X"}, 
+        board, 
+        player, 
+        channel, 
+        playing = -1, 
+        url = 'http://localhost:8080';
     init();
 
     function init() {
+
+        channel = window.location.href.split('=')[1];
+        console.log(channel);
+        if(channel == undefined)
+            document.location.href="index.html";
+
         $.ajax({
+            type: "POST",
             url: url+'/challenger',
             timeout: 4000,
             crossDomain: true,
+            data: {'token': channel},
             success: function (data) {
                 player = data.player
+                document.getElementById("player").innerHTML = 'Vous êtes le player '+player.name;
                 if(!data.wait)
                     matchMaking();
                 else{
+                    playing = 0;
                     setMessage('Au joueur X !');
                     waitChallengerPlaying();
                 }
@@ -34,11 +47,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function twoPlayer(wait){
         $.ajax({
+            type: "POST",
             url: url+'/waitChallenger',
             timeout: 4000,
             crossDomain: true,
+            data: {'token': channel},
             success: function (data) {
                 if(data.wait){
+                    playing = 0;
                     clearInterval(wait);
                     setMessage('Au joueur '+currentPlayer.name+' !');
                 }
@@ -56,6 +72,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     $("#square_"+i+"_"+j).html('<span class="X">X</span>');
                 else if(board[i][j].state == 2)
                     $("#square_"+i+"_"+j).html('<span class="O">O</span>');
+                else
+                    $("#square_"+i+"_"+j).html(''); 
             }
         }
     }
@@ -73,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function waitChallengerPlaying(){
-        setMessage('Au joueur '+currentPlayer+' !');
+        setMessage('Au joueur '+currentPlayer.name+' !');
                 var wait = setInterval(function(){
                     challengerPlaying(wait);
                 }, 500);
@@ -81,9 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function challengerPlaying(wait){
         $.ajax({
+            type: "POST",
             url: url+'/state',
             timeout: 4000,
             crossDomain: true,
+            data: {'token': channel},
             success: function (data) {
                 if(data.etat != 0){
                     playing = data.etat
@@ -95,10 +115,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         setMessage("O Gagne!");
                     else if (playing == 3)
                         setMessage("Egalité!");
+                    $("#boutons").show();
+                    clearInterval(wait);
                 }else{                
                     currentPlayer = data.game.currentMove;
-                    board = data.game.board.board;
+                    board = data.game.board.board;         
                     showBoard();
+                    setMessage('Au joueur '+currentPlayer.name+' !');
                     if(player.squareState == currentPlayer.squareState){
                         clearInterval(wait);
                     }
@@ -113,13 +136,17 @@ document.addEventListener("DOMContentLoaded", function() {
     //Action lors du clic sur le bouton
     document.getElementById("new-game").addEventListener("click", function() {
         $.ajax({
+            type: "POST",
             url: url+'/start',
             timeout: 4000,
             crossDomain: true,
+            data: {'token': channel},
             success: function (data) {
                 clearBoard();
                 currentPlayer = data.game.currentMove;
                 board = data.game.board.board;
+                playing = data.etat
+
                 setMessage('Nouvelle partie !<br>Au joueur '+player.name+' !');
             },
             error: function() {
@@ -130,9 +157,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("quit").addEventListener("click", function() {
         $.ajax({
+            type: "POST",
             url: url+'/quit/'+player,
             timeout: 4000,
             crossDomain: true,
+            data: {'token': channel},
             success: function (data) {
                 window.close();
             },
@@ -144,16 +173,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Action lors du clic sur une case
     document.getElementById("board").addEventListener("click", function(event) {
-        if (event.target.classList.contains("square") && playing ==0 && player.squareState == currentPlayer.squareState)  {
+        if (event.target.classList.contains("square") && playing == 0 && player.squareState == currentPlayer.squareState)  {
 
             squareInfo = event.target.id.split("_");
             row = Number(squareInfo[1]);
             col = Number(squareInfo[2]);
 
             $.ajax({
+                type: "POST",
                 url: url+'/play/'+player.squareState+'/'+row+'/'+col,
                 timeout: 4000,
                 crossDomain: true,
+                data: {'token': channel},
                 success: function (data) {
                     if(data.etat != 0){
                         playing = data.etat
@@ -165,6 +196,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             setMessage("O Gagne!");
                         else if (playing == 3)
                             setMessage("Egalité!");
+                        $("#boutons").show();
                     }else{
                         currentPlayer = data.game.currentMove;
                         board = data.game.board.board;

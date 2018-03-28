@@ -12,12 +12,11 @@
 
         <script src="./js/vendor/jquery-3.3.1.min.js"></script>
         <script src="./js/vendor/bootstrap.min.js"></script>
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-        <script src="./js/socketIO.js"></script> -->
         <script src="./js/main.js"></script>
     </head>
     <body>
-        <h2>Tic Tac Toe - Morpion</h2>
+        <h1>Tic Tac Toe - Morpion</h1>
+        <p id="player"></p>
         <div class="container" id="board">
         <div class="row">
             <div class="square" id="square_0_0"></div>
@@ -35,8 +34,10 @@
             <div class="square" id="square_2_2"></div>
         </div>
         </div>
-        <button id="new-game" type="button" class="btn btn-default btn-lg">Nouvelle partie</button>
-        <button id="quit" type="button" class="btn btn-default btn-lg">Quitter le salon</button>
-        <h3 id="message"></h3>
+        <div id='boutons'>
+            <button id="new-game" type="button" class="btn btn-default btn-lg">Nouvelle partie</button>
+            <button id="quit" type="button" class="btn btn-default btn-lg">Quitter le salon</button>
+        </div>
+        <h2 id="message"></h2>
     </body>
 </html>

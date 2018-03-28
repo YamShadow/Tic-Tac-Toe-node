@@ -16,3 +16,7 @@ body {text-align: center;color: #dedede;background-color: #212121;}
 #new-game {margin: 10px;background-color: #212121;border-color: #3e3d3d;color: #dedede;}
 #message {font-size: 3em;}
 .X {color:#d47777;}
+#boutons{display: none;}
+
+form {margin-top: 25px;}
+input#channel{color: black;}
