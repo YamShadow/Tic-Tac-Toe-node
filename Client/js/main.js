@@ -1,20 +1,23 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     var currentPlayer = {'squareState': 1, 'name': "X" }, board, player = {'squareState': 1, 'name': "X"};
+    var playing = 0;
+    var url = 'http://localhost:8080';
     init();
 
     function init() {
         $.ajax({
-            url: 'http://localhost:8080/challenger',
+            url: url+'/challenger',
             timeout: 4000,
             crossDomain: true,
             success: function (data) {
                 player = data.player
-                console.log(data);
                 if(!data.wait)
                     matchMaking();
-                else
-                    setMessage('Au jour du joueur '+currentPlayer.name);
+                else{
+                    setMessage('Au joueur X !');
+                    waitChallengerPlaying();
+                }
             },
             error: function() {
                 setMessage('Echec....')
@@ -23,24 +26,22 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function matchMaking() {
-        setMessage('On attend un second joueur ...');
+        setMessage('On attend d\'un second joueur ...');
                 var wait = setInterval(function(){
                     twoPlayer(wait);
-                }, 2000);
+                }, 1000);
     }
 
     function twoPlayer(wait){
-        return $.ajax({
-            url: 'http://localhost:8080/waitChallenger',
+        $.ajax({
+            url: url+'/waitChallenger',
             timeout: 4000,
-           // async: false,
             crossDomain: true,
             success: function (data) {
                 if(data.wait){
-                    setMessage('Au jour du joueur X');
-                    clearInterval(wait)
+                    clearInterval(wait);
+                    setMessage('Au joueur '+currentPlayer.name+' !');
                 }
-                //return data;
             },
             error: function() {
                 return false;
@@ -49,15 +50,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function showBoard(){
-        console.log(board);
         for(var i = 0; i < 3; i++){
             for(var j = 0; j < 3; j++){
-                if(board[i][j].state == 1){
+                if(board[i][j].state == 1)
                     $("#square_"+i+"_"+j).html('<span class="X">X</span>');
-                }
-                else if(board[i][j].state == 2) {
+                else if(board[i][j].state == 2)
                     $("#square_"+i+"_"+j).html('<span class="O">O</span>');
-                }
             }
         }
     }
@@ -74,10 +72,48 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("message").innerHTML = message;
     }
 
+    function waitChallengerPlaying(){
+        setMessage('Au joueur '+currentPlayer+' !');
+                var wait = setInterval(function(){
+                    challengerPlaying(wait);
+                }, 500);
+    }
+
+    function challengerPlaying(wait){
+        $.ajax({
+            url: url+'/state',
+            timeout: 4000,
+            crossDomain: true,
+            success: function (data) {
+                if(data.etat != 0){
+                    playing = data.etat
+                    board = data.game.board.board;
+                    showBoard();
+                    if (playing === 1)
+                        setMessage("X Gagne!")
+                    else if (playing == 2)
+                        setMessage("O Gagne!");
+                    else if (playing == 3)
+                        setMessage("Egalité!");
+                }else{                
+                    currentPlayer = data.game.currentMove;
+                    board = data.game.board.board;
+                    showBoard();
+                    if(player.squareState == currentPlayer.squareState){
+                        clearInterval(wait);
+                    }
+                }
+            },
+            error: function() {
+                return false;
+            }
+        });
+    }
+
     //Action lors du clic sur le bouton
     document.getElementById("new-game").addEventListener("click", function() {
         $.ajax({
-            url: 'http://localhost:8080/start',
+            url: url+'/start',
             timeout: 4000,
             crossDomain: true,
             success: function (data) {
@@ -94,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("quit").addEventListener("click", function() {
         $.ajax({
-            url: 'http://localhost:8080/quit/'+player,
+            url: url+'/quit/'+player,
             timeout: 4000,
             crossDomain: true,
             success: function (data) {
@@ -108,43 +144,39 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Action lors du clic sur une case
     document.getElementById("board").addEventListener("click", function(event) {
-        console.log(currentPlayer);
-        if (event.target.classList.contains("square") && player.squareState == currentPlayer.squareState)  {
+        if (event.target.classList.contains("square") && playing ==0 && player.squareState == currentPlayer.squareState)  {
 
-            console.log(player);
             squareInfo = event.target.id.split("_");
             row = Number(squareInfo[1]);
             col = Number(squareInfo[2]);
 
             $.ajax({
-                url: 'http://localhost:8080/play/'+player.squareState+'/'+row+'/'+col,
+                url: url+'/play/'+player.squareState+'/'+row+'/'+col,
                 timeout: 4000,
                 crossDomain: true,
                 success: function (data) {
-                    //box.html(data);
-                    currentPlayer = data.game.currentMove.name;
-                    board = data.game.board.board;
-                    showBoard();
-                    setMessage('Au joueur '+currentPlayer+' !');
+                    if(data.etat != 0){
+                        playing = data.etat
+                        board = data.game.board.board;
+                        showBoard();
+                        if (playing === 1)
+                            setMessage("X Gagne!")
+                        else if (playing == 2)
+                            setMessage("O Gagne!");
+                        else if (playing == 3)
+                            setMessage("Egalité!");
+                    }else{
+                        currentPlayer = data.game.currentMove;
+                        board = data.game.board.board;
+                        showBoard();
+                        setMessage('Au joueur '+currentPlayer+' !');
+                        waitChallengerPlaying();
+                    }
                 },
                 error: function() {
                     setMessage('Echec....')
                 }
             });
-
-        //     var val = game.makeMove(row, col)
-        //     if (val !== undefined) {
-        //         var stateValue = Square.stateToString(val);
-        //         event.target.innerHTML = `<span class=${stateValue}>${stateValue}</span>`;
-        //     }
-        //     state = game.winner();
-
-        //     if (state === Board.X_WINS)
-        //         setMessage("X Gagne!")
-        //     else if (state === Board.O_WINS)
-        //         setMessage("O Gagne!");
-        //     else if (state === Board.TIE)
-        //         setMessage("Egalité!");
         }
     });
 

@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
 var Game = require('./game/game');
 
 const game = new Game();
@@ -16,6 +14,9 @@ app.get('/', function (req, res) {
         , '/state': 'retourne le plateau de jeu courant'
         , '/start': 'demarre une partie et retourne le plateau de jeu'
         , '/play/:player/:row/:col': 'place un pion du joueur player a la ligne row et a la colonne col. Renvoie le plateau de jeu'
+        , '/waitChallenger': 'Verifie si on est bien deux joueurs'
+        , '/challenger': 'Attribu un pion au client'
+        , '/quit/:player': 'quitte le salon'
     } }, null, 3));
 })
 
@@ -25,6 +26,7 @@ app.get('/state', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.send(JSON.stringify({
+        'etat': state,
         'game' : game
     }, null, 3));
   })
@@ -49,14 +51,14 @@ app.get('/play/:player/:row/:col', function (req, res) {
     var col = req.params.col;
 
     game.makeMove(player, row, col)
-    state = game.winner(player);
-    console.log('state : '+ state);
+    state = game.winner();
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
         'coups': true,
+        'etat': state,
         'game' : game
     }, null, 3));
     
@@ -64,7 +66,6 @@ app.get('/play/:player/:row/:col', function (req, res) {
 
   app.get('/waitChallenger', function (req, res) {
     // Attente d'un second joueur
-    //console.log(game.twoPlayer());
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
@@ -90,7 +91,7 @@ app.get('/play/:player/:row/:col', function (req, res) {
 
     var player = req.params.player;
 
-    var player = game.free();
+    var player = game.free(player);
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');

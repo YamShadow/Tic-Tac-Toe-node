@@ -47,17 +47,17 @@ Board.prototype.boardState = function() {
     // verification des cases
     var stateWins = function(board, state) {
         for(var i = 0; i < 3; i++) {
-            if (board[i][0].state === state && board[i][1].state === state && board[i][2].state === state)
+            if (board[i][0].state == state && board[i][1].state == state && board[i][2].state == state)
                 return true;
             
-            if (board[0][i].state === state && board[1][i].state === state && board[2][i].state === state)
+            if (board[0][i].state == state && board[1][i].state == state && board[2][i].state == state)
                 return true;
         }
 
-        if (board[0][0].state === state && board[1][1].state === state && board[2][2].state === state)
+        if (board[0][0].state == state && board[1][1].state == state && board[2][2].state == state)
             return true;
         
-        if (board[0][2].state === state && board[1][1].state === state && board[2][0].state === state)
+        if (board[0][2].state == state && board[1][1].state == state && board[2][0].state == state)
             return true;
 
     return false;

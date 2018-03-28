@@ -31,8 +31,8 @@ Game.prototype.__changeTurn = function() {
 };
 
 // check si il y a un gagnant 
-Game.prototype.winner = function(player) {
-    return this.board.boardState(player);
+Game.prototype.winner = function() {
+    return this.board.boardState();
 };
 
 // reset le jeu
