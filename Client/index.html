@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Tic Tac Toe - Morpion</title>
+        <meta name="description" content="">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="./js/vendor/jquery-3.3.1.min.js"></script>
+        <script src="./js/vendor/bootstrap.min.js"></script>
+        <script src="./js/home.js"></script>
+    </head>
+    <body>
+        <h1>Tic Tac Toe - Morpion</h1>
+        <p>Bienvenue sur ce jeu tournant sous NodeJs <br/>
+        Veuillez choisir votre mode de jeux ! </p>
+        <button id="new-channel" type="button" class="btn btn-default btn-lg">Créer un nouveau salon | 2 joueurs</button>
+        <button id="one-vs-ai" type="button" class="btn btn-default btn-lg">1 VS AI | BIENTOT !</button>
+
+        <form method="get" action="plateau.html">
+            <h2>Rejoindre un salon</h2>
+            <input type="text" id="channel" name="channel">
+            <input type="submit" class="btn btn-default btn-lg" value="Rejoindre">
+        </form>
+    </body>
+</html>
