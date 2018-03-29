@@ -4,14 +4,7 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 var Game = require('./game/game');
 
-//const game = new Game();
 const channels = [];
-var data = {uuid: '854712936', state:"0", game: new Game()}
-channels.push(data)
-var data = {uuid: '123456789', state:"1", game: new Game()}
-channels.push(data)
-
-var state = 0;
 
 // Route /
 app.get('/', function (req, res) {
