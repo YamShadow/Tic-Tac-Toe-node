@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
         url = 'http://localhost:8080';
     initClient();
 
+    /*** ACTION ***/
+
+
     // fonction d'initialisation du client
     function initClient() {
 
@@ -111,36 +114,45 @@ document.addEventListener("DOMContentLoaded", function() {
             crossDomain: true,
             data: {'token': channel},
             success: function (data) {
-                if(data.etat != 0){
-                    playing = data.etat;
-                    board = data.game.board.board;
-                    showBoard();
-                    if (playing === 1)
-                        setMessage("X Gagne!");
-                    else if (playing == 2)
-                        setMessage("O Gagne!");
-                    else if (playing == 3)
-                        setMessage("Egalité!");
-                    if(player.squareState != 0)
-                        $("#boutons").show();
-                }else{
-                    if(player.squareState != 0)           
-                        $("#boutons").hide();     
-                    currentPlayer = data.game.currentMove;
-                    board = data.game.board.board;
-                    playing = data.etat;         
-                    showBoard();
-                    setMessage('Au joueur '+currentPlayer.name+' !');
-                    if(player.squareState == currentPlayer.squareState){
-                        clearInterval(wait);
-                    }
-                }
+                reponseChallengerPlaying(data);
             },
             error: function() {
                 return false;
             }
         });
     }
+
+    function reponseChallengerPlaying(data, bool = false){
+        if(data.etat != 0){
+            playing = data.etat;
+            board = data.game.board.board;
+            showBoard();
+            if (playing === 1)
+                setMessage("X Gagne!");
+            else if (playing == 2)
+                setMessage("O Gagne!");
+            else if (playing == 3)
+                setMessage("Egalité!");
+            if(player.squareState != 0)
+                $("#boutons").show();
+            if(bool)
+                waitChallengerPlaying();
+        }else{
+            if(player.squareState != 0)           
+                $("#boutons").hide();     
+            currentPlayer = data.game.currentMove;
+            board = data.game.board.board;
+            playing = data.etat;         
+            showBoard();
+            setMessage('Au joueur '+currentPlayer.name+' !');
+            if(player.squareState == currentPlayer.squareState)
+                clearInterval(wait);
+            if(bool)
+                waitChallengerPlaying();
+        }
+    }
+
+    /*** ACTION ***/
 
     //Action lors du clic sur le bouton " Nouvelle partie "
     document.getElementById("new-game").addEventListener("click", function() {
@@ -196,26 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 crossDomain: true,
                 data: {'token': channel},
                 success: function (data) {
-                    if(data.etat != 0){
-                        playing = data.etat;
-                        board = data.game.board.board;
-                        showBoard();
-                        if (playing === 1)
-                            setMessage("X Gagne!");
-                        else if (playing == 2)
-                            setMessage("O Gagne!");
-                        else if (playing == 3)
-                            setMessage("Egalité!");
-                        $("#boutons").show();
-                        waitChallengerPlaying();
-                    }else{
-                        currentPlayer = data.game.currentMove;
-                        board = data.game.board.board;
-                        playing = data.etat;
-                        showBoard();
-                        setMessage('Au joueur '+currentPlayer+' !');
-                        waitChallengerPlaying();
-                    }
+                    reponseChallengerPlaying(data, true);
                 },
                 error: function() {
                     setMessage('Echec de connexion au serveur....');
@@ -224,13 +217,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // conflit avec le click
     // $(".square").mouseenter(function(){
-    //     console.log($(this).attr('id'));
-    //     $("h1").css("background-color", "yellow");
+    //     var elm = $(this).attr('id');
+    //     console.log($("#"+elm).html());
+    //     if($("#"+elm).html() == '')
+    //         $("#"+elm).html('<span class="X">X</span>');
+    //     console.log($("#"+elm).innerHTML);
     // });
 
-    // $("h1").mouseleave(function(){
-    //     $("h1").css("background-color", "");
+    // $(".square").mouseleave(function(){
+    //     var elm = $(this).attr('id');
+    //     if($("#"+elm).html() != '')
+    //     $("#"+elm).html('');
     // });
 
 });
