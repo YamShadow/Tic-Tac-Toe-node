@@ -129,7 +129,7 @@ Vous pouvez jouer !
     * Personnalisation des noms
 
 * Autres
-    * Systeme de points
+    * Système de points
     * Historiques
     * Optimisation code 
     * Optimisation des calls Ajax

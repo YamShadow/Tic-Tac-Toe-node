@@ -42,6 +42,7 @@ Game.prototype.reset = function() {
     return true;
 };
 
+// asignation d'un statut au joueur
 Game.prototype.assignation = function() {
     if(player1 == false){
         player1 = true;
@@ -52,13 +53,14 @@ Game.prototype.assignation = function() {
         return new Player(Square.O_STATE, "O");
     }
     else
-        return new Player(Square.EMPTY_STATE, "Observer");
+        return new Player(Square.EMPTY_STATE, "spéctateur");
 }
-
+// Check si il y a deux joueurs
 Game.prototype.twoPlayer = function() {
     return (player1 && player2) ? true : false;
 }
 
+// Libere la place d'un joueur
 Game.prototype.free = function(player) {
     if(player == 1)
         player1 = false;
