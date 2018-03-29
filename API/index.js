@@ -5,6 +5,7 @@ var Game = require('./game/game');
 const game = new Game();
 var state = 0;
 
+// Route /
 app.get('/', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,8 +21,9 @@ app.get('/', function (req, res) {
     } }, null, 3));
 })
 
+// Route /state en post
+// retourne le plateau de jeu
 app.post('/state', function (req, res) {
-    // retourne le plateau de jeu
     res.setHeader('Content-Type', 'application/json');
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
@@ -31,10 +33,12 @@ app.post('/state', function (req, res) {
     }, null, 3));
   })
 
+// Route /start en post
+// demarre une partie et retourne le plateau de jeu
 app.post('/start', function (req, res) {
-    // demarre une partie et retourne le plateau de jeu
     game.reset();
     state = 0;
+
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
@@ -46,8 +50,9 @@ app.post('/start', function (req, res) {
 
   })
 
+// Route /play/:player/:row/:col
+// place un pion du joueur player a la ligne row et a la colonne col. Renvoie le plateau de jeu
 app.post('/play/:player/:row/:col', function (req, res) {
-    // place un pion du joueur player a la ligne row et a la colonne col. Renvoie le plateau de jeu
     var player = req.params.player;
     var row = req.params.row;
     var col = req.params.col;
@@ -66,19 +71,22 @@ app.post('/play/:player/:row/:col', function (req, res) {
     
   })
 
-  app.post('/waitChallenger', function (req, res) {
-    // Attente d'un second joueur
+// Route /waitChallenger
+// Attente d'un second joueur
+app.post('/waitChallenger', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
         'wait': game.twoPlayer()
     }, null, 3));
-  })
+})
 
-  app.post('/challenger', function (req, res) {
-    //Attribution d'un état au joueur
+// Route /challenger
+//Attribution d'un état au joueur
+app.post('/challenger', function (req, res) {
     var player = game.assignation();
+
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
@@ -86,14 +94,14 @@ app.post('/play/:player/:row/:col', function (req, res) {
         'wait' : game.twoPlayer(),
         'player' : player
     }, null, 3));
-  })
+})
 
-  app.post('/quit/:player', function (req, res) {
-    //route de quit
-
+// /quit/:player
+//route de quit
+app.post('/quit/:player', function (req, res) {
     var player = req.params.player;
-
     var player = game.free(player);
+
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
     res.setHeader('Content-Type', 'application/json');
@@ -103,7 +111,7 @@ app.post('/play/:player/:row/:col', function (req, res) {
   })
 
 
-
+//Lancement du 
 app.listen(8080, function () {
   console.log('Link Start !!!!!!')
 })

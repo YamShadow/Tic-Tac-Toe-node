@@ -6,9 +6,10 @@ document.addEventListener("DOMContentLoaded", function() {
         channel, 
         playing = -1, 
         url = 'http://localhost:8080';
-    init();
+    initClient();
 
-    function init() {
+    // fonction d'initialisation du client
+    function initClient() {
 
         channel = window.location.href.split('=')[1];
         console.log(channel);
@@ -22,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
             crossDomain: true,
             data: {'token': channel},
             success: function (data) {
-                player = data.player
-                document.getElementById("player").innerHTML = 'Vous êtes le player '+player.name;
+                player = data.player;
+                document.getElementById("player").innerHTML = 'Vous êtes le joueur '+player.name;
                 if(!data.wait)
                     matchMaking();
                 else{
@@ -33,11 +34,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             },
             error: function() {
-                setMessage('Echec de connexion au serveur....')
+                setMessage('Echec de connexion au serveur....');
             }
         });
     }
 
+    //Fonction de boucle pour la recherche d'un second joueur
     function matchMaking() {
         setMessage('On attend d\'un second joueur ...');
                 var wait = setInterval(function(){
@@ -45,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 1000);
     }
 
+    // Fonction Ajx de check du matchmaking
     function twoPlayer(wait){
         $.ajax({
             type: "POST",
@@ -65,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Fonction de remplissage du board
     function showBoard(){
         for(var i = 0; i < 3; i++){
             for(var j = 0; j < 3; j++){
@@ -90,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("message").innerHTML = message;
     }
 
+    // Function d'initialisation de la boucle
     function waitChallengerPlaying(){
         setMessage('Au joueur '+currentPlayer.name+' !');
                 var wait = setInterval(function(){
@@ -97,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }, 500);
     }
 
+    // Function Ajax qui fait du long thread pour sonder l'API d'un changement sur le plateau
     function challengerPlaying(wait){
         $.ajax({
             type: "POST",
@@ -110,14 +116,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     board = data.game.board.board;
                     showBoard();
                     if (playing === 1)
-                        setMessage("X Gagne!")
+                        setMessage("X Gagne!");
                     else if (playing == 2)
                         setMessage("O Gagne!");
                     else if (playing == 3)
                         setMessage("Egalité!");
-                    $("#boutons").show();
-                    //clearInterval(wait);
-                }else{                
+                    if(player.squareState != 0)
+                        $("#boutons").show();
+                }else{
+                    if(player.squareState != 0)           
+                        $("#boutons").hide();     
                     currentPlayer = data.game.currentMove;
                     board = data.game.board.board;
                     playing = data.etat;         
@@ -134,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    //Action lors du clic sur le bouton
+    //Action lors du clic sur le bouton " Nouvelle partie "
     document.getElementById("new-game").addEventListener("click", function() {
         $.ajax({
             type: "POST",
@@ -151,11 +159,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 setMessage('Nouvelle partie !<br>Au joueur '+player.name+' !');
             },
             error: function() {
-                setMessage('Echec de connexion au serveur....')
+                setMessage('Echec de connexion au serveur....');
             }
         });
     });
 
+    //Action lors du bouton " quitter le salon"
     document.getElementById("quit").addEventListener("click", function() {
         $.ajax({
             type: "POST",
@@ -167,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 window.close();
             },
             error: function() {
-                setMessage('Echec de connexion au serveur....')
+                setMessage('Echec de connexion au serveur....');
             }
         });
     });
@@ -192,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         board = data.game.board.board;
                         showBoard();
                         if (playing === 1)
-                            setMessage("X Gagne!")
+                            setMessage("X Gagne!");
                         else if (playing == 2)
                             setMessage("O Gagne!");
                         else if (playing == 3)
@@ -209,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 },
                 error: function() {
-                    setMessage('Echec de connexion au serveur....')
+                    setMessage('Echec de connexion au serveur....');
                 }
             });
         }

@@ -7,7 +7,7 @@ Pour installer le projet
 - $ cd API 
 - $ npm install 
 - $ npm start
-- ouvrir le fichier 'Client/tablaeu.html' sur 2 onglets
+- ouvrir le fichier 'Client/tableau.html' sur 2 onglets * (Client/index.html est en prévision de la gestion des channels) *
 
 Vous pouvez jouer !
 
@@ -112,7 +112,7 @@ Vous pouvez jouer !
 
 * Systeme de channels avec uuid (obligé de relancer le serveur pour rejouer actuellement)
     * Creation route check si salon existe
-    * uuid envoyer en post. Création de l'array de partie
+    * Création de l'array de partie (uuid déjà envoyé en post)
     * renvoi du bon board en fonction de l'uuid
 
 * Matchmaking 
@@ -124,3 +124,12 @@ Vous pouvez jouer !
     * complexe
 
 * Design plus poussé 
+    * Dashboard plus sexy
+    * Hover des cases 
+    * Personnalisation des noms
+
+* Autres
+    * Systeme de points
+    * Historiques
+    * Optimisation code 
+    * Optimisation des calls Ajax
