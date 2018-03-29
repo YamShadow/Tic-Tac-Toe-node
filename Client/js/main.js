@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
             crossDomain: true,
             data: {'token': channel},
             success: function (data) {
-                reponseChallengerPlaying(data);
+                reponseChallengerPlaying(data, wait);
             },
             error: function() {
                 return false;
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    function reponseChallengerPlaying(data, bool = false){
+    function reponseChallengerPlaying(data,wait = false, bool = false){
         if(data.etat != 0){
             playing = data.etat;
             board = data.game.board.board;
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
             playing = data.etat;         
             showBoard();
             setMessage('Au joueur '+currentPlayer.name+' !');
-            if(player.squareState == currentPlayer.squareState)
+            if(player.squareState == currentPlayer.squareState && wait)
                 clearInterval(wait);
             if(bool)
                 waitChallengerPlaying();
@@ -156,24 +156,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //Action lors du clic sur le bouton " Nouvelle partie "
     document.getElementById("new-game").addEventListener("click", function() {
-        $.ajax({
-            type: "POST",
-            url: url+'/start',
-            timeout: 4000,
-            crossDomain: true,
-            data: {'token': channel},
-            success: function (data) {
-                clearBoard();
-                currentPlayer = data.game.currentMove;
-                board = data.game.board.board;
-                playing = data.etat;
-
-                setMessage('Nouvelle partie !<br>Au joueur '+player.name+' !');
-            },
-            error: function() {
-                setMessage('Echec de connexion au serveur....');
-            }
-        });
+        if(playing != 0){
+            $.ajax({
+                type: "POST",
+                url: url+'/start',
+                timeout: 4000,
+                crossDomain: true,
+                data: {'token': channel},
+                success: function (data) {
+                    
+                },
+                error: function() {
+                    setMessage('Echec de connexion au serveur....');
+                }
+            });
+        }
     });
 
     //Action lors du bouton " quitter le salon"
@@ -208,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 crossDomain: true,
                 data: {'token': channel},
                 success: function (data) {
-                    reponseChallengerPlaying(data, true);
+                    reponseChallengerPlaying(data, false, true);
                 },
                 error: function() {
                     setMessage('Echec de connexion au serveur....');
