@@ -1,7 +1,6 @@
 var Board = require('./board');
 var Player = require('./player');
 var Square = require('./square');
-var player1 = false, player2 = false;
 
 // Constructeur de la classe Game
 function Game(playerX = "X", playerO = "O") {
@@ -9,6 +8,9 @@ function Game(playerX = "X", playerO = "O") {
     this.playerX = new Player(Square.X_STATE, playerX);
     this.playerO = new Player(Square.O_STATE, playerO);
     this.currentMove = this.playerX;
+    this.player1 = false;
+    this.player2 = false;
+
 }
 
 // effectue un deplacement
@@ -44,12 +46,12 @@ Game.prototype.reset = function() {
 
 // asignation d'un statut au joueur
 Game.prototype.assignation = function() {
-    if(player1 == false){
-        player1 = true;
+    if(this.player1 == false){
+        this.player1 = true;
         return new Player(Square.X_STATE, "X");
     }
-    else if(player2 == false){
-        player2 = true;
+    else if(this.player2 == false){
+        this.player2 = true;
         return new Player(Square.O_STATE, "O");
     }
     else
@@ -57,7 +59,7 @@ Game.prototype.assignation = function() {
 }
 // Check si il y a deux joueurs
 Game.prototype.twoPlayer = function() {
-    return (player1 && player2) ? true : false;
+    return (this.player1 && this.player2) ? true : false;
 }
 
 // Libere la place d'un joueur

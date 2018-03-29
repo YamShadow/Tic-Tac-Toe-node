@@ -10,14 +10,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     /*** ACTION ***/
 
-
     // fonction d'initialisation du client
     function initClient() {
 
         channel = window.location.href.split('=')[1];
-        console.log(channel);
         if(channel == undefined)
             document.location.href="index.html";
+        document.getElementById("codePartie").innerHTML = 'Votre code de partie est <b>'+channel+'</b><br> Invitez vos amis !';
 
         $.ajax({
             type: "POST",
@@ -122,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    //Function de reponse d'Ajax du calcule de board
     function reponseChallengerPlaying(data,wait = false, bool = false){
         if(data.etat != 0){
             playing = data.etat;
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 crossDomain: true,
                 data: {'token': channel},
                 success: function (data) {
-                    
+
                 },
                 error: function() {
                     setMessage('Echec de connexion au serveur....');
