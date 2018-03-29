@@ -7,7 +7,7 @@ Pour installer le projet
 - $ cd API 
 - $ npm install 
 - $ npm start
-- ouvrir le fichier 'Client/tableau.html' sur 2 onglets * (Client/index.html est en prévision de la gestion des channels) *
+- ouvrir le fichier 'Client/index.html' sur 2 onglets
 
 Vous pouvez jouer !
 
@@ -17,6 +17,7 @@ Vous pouvez jouer !
 * Possibilité d'être spéctateur d'une game
 * Possibilité de jouer et de gagner
 * Possibilité de relancer une partie
+* Gestion de salons par uuid. Possible d'inviter ses amis à jouer ou observer sa game !
 
 ## Routes de l'api en GET
 ### /
@@ -109,11 +110,6 @@ Vous pouvez jouer !
     }
 
 ## TODO
-
-* Systeme de channels avec uuid (obligé de relancer le serveur pour rejouer actuellement)
-    * Creation route check si salon existe
-    * Création de l'array de partie (uuid déjà envoyé en post)
-    * renvoi du bon board en fonction de l'uuid
 
 * Matchmaking 
     * Stopper le jeu si l'un des utilisateurs se deconnecte / met trop de temps a jouer
