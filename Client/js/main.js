@@ -224,4 +224,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // $(".square").mouseenter(function(){
+    //     console.log($(this).attr('id'));
+    //     $("h1").css("background-color", "yellow");
+    // });
+
+    // $("h1").mouseleave(function(){
+    //     $("h1").css("background-color", "");
+    // });
+
 });
