@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             },
             error: function() {
-                setMessage('Echec....')
+                setMessage('Echec de connexion au serveur....')
             }
         });
     }
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
             data: {'token': channel},
             success: function (data) {
                 if(data.etat != 0){
-                    playing = data.etat
+                    playing = data.etat;
                     board = data.game.board.board;
                     showBoard();
                     if (playing === 1)
@@ -116,10 +116,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     else if (playing == 3)
                         setMessage("Egalité!");
                     $("#boutons").show();
-                    clearInterval(wait);
+                    //clearInterval(wait);
                 }else{                
                     currentPlayer = data.game.currentMove;
-                    board = data.game.board.board;         
+                    board = data.game.board.board;
+                    playing = data.etat;         
                     showBoard();
                     setMessage('Au joueur '+currentPlayer.name+' !');
                     if(player.squareState == currentPlayer.squareState){
@@ -145,12 +146,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 clearBoard();
                 currentPlayer = data.game.currentMove;
                 board = data.game.board.board;
-                playing = data.etat
+                playing = data.etat;
 
                 setMessage('Nouvelle partie !<br>Au joueur '+player.name+' !');
             },
             error: function() {
-                setMessage('Echec....')
+                setMessage('Echec de connexion au serveur....')
             }
         });
     });
@@ -158,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("quit").addEventListener("click", function() {
         $.ajax({
             type: "POST",
-            url: url+'/quit/'+player,
+            url: url+'/quit/'+player.squareState,
             timeout: 4000,
             crossDomain: true,
             data: {'token': channel},
@@ -166,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 window.close();
             },
             error: function() {
-                setMessage('Echec....')
+                setMessage('Echec de connexion au serveur....')
             }
         });
     });
@@ -187,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: {'token': channel},
                 success: function (data) {
                     if(data.etat != 0){
-                        playing = data.etat
+                        playing = data.etat;
                         board = data.game.board.board;
                         showBoard();
                         if (playing === 1)
@@ -197,16 +198,18 @@ document.addEventListener("DOMContentLoaded", function() {
                         else if (playing == 3)
                             setMessage("Egalité!");
                         $("#boutons").show();
+                        waitChallengerPlaying();
                     }else{
                         currentPlayer = data.game.currentMove;
                         board = data.game.board.board;
+                        playing = data.etat;
                         showBoard();
                         setMessage('Au joueur '+currentPlayer+' !');
                         waitChallengerPlaying();
                     }
                 },
                 error: function() {
-                    setMessage('Echec....')
+                    setMessage('Echec de connexion au serveur....')
                 }
             });
         }

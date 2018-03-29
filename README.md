@@ -1,5 +1,5 @@
 # Tic-Tac-Toe-node
-Tic tac toe with Node.JS (API+Client)
+Tic tac toe with Node.JS (API+Client) 
 
 ## Installation
 Pour installer le projet
@@ -16,6 +16,7 @@ Vous pouvez jouer !
 * Matchmaking entre les deux premiers joueurs d'un salon
 * Possibilité d'être spéctateur d'une game
 * Possibilité de jouer et de gagner
+* Possibilité de relancer une partie
 
 ## Routes de l'api en GET
 ### /
@@ -109,14 +110,15 @@ Vous pouvez jouer !
 
 ## TODO
 
-* Nouvelle partie fonctionnelle chez les deux clients
-    * modifier route start game
-    * Faire boucle ecoute et stop si reset: true
-
 * Systeme de channels avec uuid (obligé de relancer le serveur pour rejouer actuellement)
     * Creation route check si salon existe
     * uuid envoyer en post. Création de l'array de partie
     * renvoi du bon board en fonction de l'uuid
+
+* Matchmaking 
+    * Stopper le jeu si l'un des utilisateurs se deconnecte / met trop de temps a jouer
+    * relancer la recherche d'un nouveau joueur si l'un des joueurs en cours quitte 
+        * relancer une nouvelle partie
 * AI
     * simple (random de case)
     * complexe
